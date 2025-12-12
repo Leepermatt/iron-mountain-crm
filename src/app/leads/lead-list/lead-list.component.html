@@ -1,0 +1,46 @@
+<section class="lead-list">
+  <h2>Leads</h2>
+
+  <form [formGroup]="filterForm" class="filters">
+    <input
+      placeholder="Search by name, email, or phone"
+      formControlName="search"
+    />
+
+    <select formControlName="stage">
+      <option value="">All stages</option>
+      <option value="New">New</option>
+      <option value="Contacted">Contacted</option>
+      <option value="Active">Active</option>
+      <option value="Closed">Closed</option>
+    </select>
+
+    <select formControlName="owner">
+      <option value="mine">My leads</option>
+      <option value="all">All leads</option>
+    </select>
+  </form>
+
+  <div *ngIf="loading">Loading…</div>
+
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Stage</th>
+        <th>Source</th>
+        <th>Owner</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let lead of leads">
+        <td>{{ lead.firstName }} {{ lead.lastName }}</td>
+        <td>{{ lead.stage }}</td>
+        <td>{{ lead.source }}</td>
+        <td>{{ lead.ownerId }}</td>
+        <td>{{ lead.createdAt | date }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,43 @@
+<h2>New Lead</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="row">
+    <label>
+      First name
+      <input formControlName="firstName" />
+    </label>
+    <label>
+      Last name
+      <input formControlName="lastName" />
+    </label>
+  </div>
+
+  <div class="row">
+    <label>
+      Email
+      <input type="email" formControlName="email" />
+    </label>
+    <label>
+      Phone
+      <input formControlName="phone" />
+    </label>
+  </div>
+
+  <label>
+    Source
+    <select formControlName="source">
+      <option>Website</option>
+      <option>Referral</option>
+      <option>Open House</option>
+      <option>Sign Call</option>
+      <option>Other</option>
+    </select>
+  </label>
+
+  <label>
+    Notes
+    <textarea formControlName="notes"></textarea>
+  </label>
+
+  <button type="submit" [disabled]="form.invalid">Add lead</button>
+</form>

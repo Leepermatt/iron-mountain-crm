@@ -1,0 +1,23 @@
+<section class="tasks" *ngIf="leadId">
+  <h3>Tasks</h3>
+
+  <ul>
+    <li *ngFor="let task of tasks">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="task.status === 'Done'"
+          (change)="markDone(task)"
+        />
+        {{ task.title }}
+      </label>
+      <small *ngIf="task.dueDate">Due: {{ task.dueDate | date }}</small>
+    </li>
+  </ul>
+
+  <form [formGroup]="form" (ngSubmit)="addTask()">
+    <input placeholder="New task" formControlName="title" />
+    <input type="date" formControlName="dueDate" />
+    <button type="submit" [disabled]="form.invalid">Add</button>
+  </form>
+</section>

@@ -1,0 +1,15 @@
+<section class="pipeline">
+  <h2>Deal pipeline</h2>
+
+  <div class="columns">
+    <div class="column" *ngFor="let stage of stages">
+      <h3>{{ stage }}</h3>
+
+      <div class="card" *ngFor="let lead of getStage(stage)">
+        <strong>{{ lead.firstName }} {{ lead.lastName }}</strong>
+        <p>{{ lead.source }}</p>
+        <small>{{ lead.createdAt | date }}</small>
+      </div>
+    </div>
+  </div>
+</section>
