@@ -36,15 +36,20 @@ export class LoginComponent {
   private returnUrl =
     this.route.snapshot.queryParamMap.get('returnUrl') || '/';
 
-  submit(): void {
-    if (this.form.invalid) return;
-    const { email, password } = this.form.value;
+submit(): void {
+  if (this.form.invalid) return;
 
-    this.auth.login(email!, password!).subscribe({
-      next: () => this.router.navigateByUrl(this.returnUrl),
-      error: () => {
-        this.error = 'Login failed';
-      },
-    });
-  }
+  const { email, password } = this.form.value;
+
+  this.auth.login(email!, password!).subscribe({
+    next: () => {
+      this.router.navigateByUrl(this.returnUrl);
+    },
+    error: (err) => {
+      console.error('Login error:', err);
+      this.error = 'Login failed';
+    }
+  });
+}
+
 }

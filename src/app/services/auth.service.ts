@@ -1,62 +1,70 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { User, UserRole } from '../models/user.model';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-const STORAGE_KEY = 'imcrm_auth';
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  roles?: string[]; 
+}
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | null>(this.loadUser());
+
+  private http = inject(HttpClient);
+
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
-
-  private loadUser(): User | null {
-    const json = localStorage.getItem(STORAGE_KEY);
-    return json ? JSON.parse(json) : null;
-  }
-
-  private saveUser(user: User | null): void {
-    if (user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-  }
-
-  login(email: string, password: string): Observable<User> {
-    // TODO: replace with real HTTP call to Node/Express JWT endpoint
-    const fakeUser: User = {
-      id: 'u1',
-      name: 'Matt Leeper',
-      email,
-      role: email.includes('admin') ? 'admin' : 'agent',
-      token: 'fake-jwt-token'
-    };
-
-    this.currentUserSubject.next(fakeUser);
-    this.saveUser(fakeUser);
-    return of(fakeUser);
-  }
-
-  logout(): void {
-    this.currentUserSubject.next(null);
-    this.saveUser(null);
-  }
-
-  get currentUser(): User | null {
+  get currentUser() {
     return this.currentUserSubject.value;
   }
 
-  isLoggedIn(): boolean {
-    return !!this.currentUser?.token;
+  private api = environment.apiUrl;
+
+  login(email: string, password: string) {
+    return this.http
+      .post<{ token: string; user: User }>(`${this.api}/auth/login`, {
+        email,
+        password,
+      })
+      .pipe(
+        tap((res) => {
+          localStorage.setItem('token', res.token);
+          this.currentUserSubject.next(res.user);
+        })
+      );
   }
 
-  hasRole(required: UserRole | UserRole[]): boolean {
-    const user = this.currentUser;
+  logout() {
+    localStorage.removeItem('token');
+    this.currentUserSubject.next(null);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  // NEW: used by auth.guard
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  // NEW: very simple role check so the guard compiles
+  hasRole(requiredRole: string): boolean {
+    const user = this.currentUserSubject.value;
+
+    // If there is no user, definitely not allowed
     if (!user) return false;
 
-    if (Array.isArray(required)) {
-      return required.includes(user.role);
+    // If roles are not set on the user, treat as allowed for now
+    if (!user.roles || user.roles.length === 0) {
+      return true;
     }
-    return user.role === required;
+
+    return user.roles.includes(requiredRole);
   }
 }

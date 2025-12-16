@@ -3,6 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Lead } from '../models/lead.model';
 import { Observable, map } from 'rxjs';
 
+export type CreateLeadDto = {
+  ownerId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  source?: string;
+  notes?: string;
+  stage?: string;
+};
+
+export type UpdateLeadDto = Partial<Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,11 +38,11 @@ export class LeadService {
       );
   }
 
-  createLead(payload: Partial<Lead>): Observable<Lead> {
+  createLead(payload: CreateLeadDto): Observable<Lead> {
     return this.http.post<Lead>(this.baseUrl, payload);
   }
 
-  updateLead(id: string, payload: Partial<Lead>): Observable<Lead> {
+  updateLead(id: string, payload: UpdateLeadDto): Observable<Lead> {
     return this.http.put<Lead>(`${this.baseUrl}/${id}`, payload);
   }
 

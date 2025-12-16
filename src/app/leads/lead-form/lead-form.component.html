@@ -1,43 +1,97 @@
-<h2>New Lead</h2>
+<div class="card">
+  <h1 class="lead-form-title">New Lead</h1>
+  <p class="lead-form-subtitle">
+    Capture a new contact into Iron Mountain CRM.
+  </p>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div class="row">
-    <label>
-      First name
-      <input formControlName="firstName" />
-    </label>
-    <label>
-      Last name
-      <input formControlName="lastName" />
-    </label>
-  </div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+      <div>
+        <label for="firstName">First name</label>
+        <input id="firstName" type="text" formControlName="firstName" />
+        <div
+          *ngIf="
+            form.get('firstName')?.invalid && form.get('firstName')?.touched
+          "
+          class="text-error"
+        >
+          First name is required.
+        </div>
+      </div>
 
-  <div class="row">
-    <label>
-      Email
-      <input type="email" formControlName="email" />
-    </label>
-    <label>
-      Phone
-      <input formControlName="phone" />
-    </label>
-  </div>
+      <div>
+        <label for="lastName">Last name</label>
+        <input id="lastName" type="text" formControlName="lastName" />
+        <div
+          *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched"
+          class="text-error"
+        >
+          Last name is required.
+        </div>
+      </div>
+    </div>
 
-  <label>
-    Source
-    <select formControlName="source">
-      <option>Website</option>
-      <option>Referral</option>
-      <option>Open House</option>
-      <option>Sign Call</option>
-      <option>Other</option>
-    </select>
-  </label>
+    <div class="form-row">
+      <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
+        <div
+          *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+          class="text-error"
+        >
+          Valid email is required.
+        </div>
+      </div>
 
-  <label>
-    Notes
-    <textarea formControlName="notes"></textarea>
-  </label>
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" type="tel" formControlName="phone" />
+      </div>
+    </div>
 
-  <button type="submit" [disabled]="form.invalid">Add lead</button>
-</form>
+    <div class="form-row">
+      <div>
+        <label for="source">Source</label>
+        <select id="source" formControlName="source">
+          <option value="Manual">Manual</option>
+          <option value="Website">Website</option>
+          <option value="Referral">Referral</option>
+          <option value="Open House">Open House</option>
+          <option value="Online Lead">Online Lead</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="stage">Stage</label>
+        <select id="stage" formControlName="stage">
+          <option value="New">New</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Showing">Showing</option>
+          <option value="Offer">Offer</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="notes">Notes</label>
+      <textarea id="notes" formControlName="notes"></textarea>
+    </div>
+
+    <div *ngIf="error" class="text-error">{{ error }}</div>
+
+    <div class="lead-form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? "Saving…" : "Save Lead" }}
+      </button>
+      <button
+        class="btn btn-ghost"
+        type="button"
+        routerLink="/leads"
+        [disabled]="loading"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

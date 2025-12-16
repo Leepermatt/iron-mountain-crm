@@ -1,14 +1,21 @@
-<header class="top-bar">
-  <div class="brand">Iron Mountain CRM</div>
+<div class="app-shell">
+  <header class="app-header">
+    <div class="app-header-logo">
+      <img src="assets/imr-logo.png" alt="Iron Mountain Realty logo" />
+      <span class="app-title">Iron Mountain CRM</span>
+    </div>
 
-  <nav class="nav-links">
-    <a routerLink="/leads" routerLinkActive="active">Leads</a>
-    <a routerLink="/leads/new" routerLinkActive="active">New Lead</a>
-    <a routerLink="/admin" routerLinkActive="active">Admin</a>
-    <button type="button" (click)="logout()">Logout</button>
-  </nav>
-</header>
+    <nav class="app-nav">
+      <a routerLink="/leads" routerLinkActive="active-link">Leads</a>
+      <a routerLink="/leads/new" routerLinkActive="active-link">New Lead</a>
+      <a routerLink="/admin" routerLinkActive="active-link">Admin</a>
+      <button class="btn btn-ghost" (click)="onLogout()">Logout</button>
+    </nav>
+  </header>
 
-<main class="main-content">
-  <router-outlet></router-outlet>
-</main>
+  <main class="app-main">
+    <div class="app-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
