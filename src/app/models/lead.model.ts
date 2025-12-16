@@ -1,14 +1,15 @@
-export type LeadStage = 'New' | 'Contacted' | 'Active' | 'Closed';
+export type LeadStage = 'New' | 'Contacted' | 'Qualified' | 'In Progress' | 'Closed' | 'Dead';
 
 export interface Lead {
   id: string;
   firstName: string;
   lastName: string;
-  email?: string;
+  email: string;
   phone?: string;
-  source?: string;
-  stage: LeadStage;
+  source: string;
   notes?: string;
+  stage?: LeadStage;
+  ownerId?: string;
   createdAt: string;
-  ownerId: string;
+  updatedAt: string;
 }

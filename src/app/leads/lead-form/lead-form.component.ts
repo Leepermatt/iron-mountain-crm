@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LeadService } from '../../services/lead.service';
 import { AuthService } from '../../services/auth.service';
+import { LeadStage } from '../../models/lead.model';
 
 @Component({
   selector: 'app-lead-form',
@@ -21,14 +22,15 @@ export class LeadFormComponent {
   error: string | null = null;
 
 form = this.fb.nonNullable.group({
-  firstName: ['', Validators.required],
-  lastName: ['', Validators.required],
-  email: ['', [Validators.required, Validators.email]],
-  phone: [''],
-  source: ['Website'],
-  notes: [''],
-  stage: ['New'],
+  firstName: this.fb.nonNullable.control('', Validators.required),
+  lastName: this.fb.nonNullable.control('', Validators.required),
+  email: this.fb.nonNullable.control('', [Validators.required, Validators.email]),
+  phone: this.fb.control<string | null>(null),
+  source: this.fb.nonNullable.control('Website'),
+  notes: this.fb.control<string | null>(null),
+  stage: this.fb.nonNullable.control<LeadStage>('New'),
 });
+
 submit(): void {
   if (this.form.invalid || this.loading) return;
 

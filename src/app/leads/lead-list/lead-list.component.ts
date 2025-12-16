@@ -34,28 +34,29 @@ export class LeadListComponent implements OnInit {
     this.load();
   }
 
-  load(): void {
-    this.loading = true;
+load(): void {
+  this.loading = true;
 
-    const { search, stage, owner } = this.filterForm.value;
+  const { search, stage, owner } = this.filterForm.value;
 
-    const ownerId =
-      owner === 'mine' ? this.auth.currentUser?.id ?? undefined : undefined;
+  const params: any = {};
+  if (search && search.trim()) params.search = search.trim();
+  if (stage) params.stage = stage;
 
-    this.leadsService
-      .getLeads({
-        search: search || undefined,
-        stage: stage || undefined,
-        ownerId,
-      })
-      .subscribe({
-        next: (leads) => {
-          this.leads = leads;
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        },
-      });
+  if (owner === 'mine' && this.auth.currentUser?.id) {
+    params.ownerId = this.auth.currentUser.id;
   }
+
+  this.leadsService.getLeads(params).subscribe({
+    next: (leads) => {
+      console.log('LEADS FROM API:', leads);
+      this.leads = leads;
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('GET LEADS FAILED:', err);
+      this.loading = false;
+    },
+  });
+}
 }

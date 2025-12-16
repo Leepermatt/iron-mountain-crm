@@ -1,46 +1,71 @@
-<section class="lead-list">
+<section class="page">
   <h2>Leads</h2>
 
-  <form [formGroup]="filterForm" class="filters">
+  <div class="filters card">
     <input
+      class="input"
+      type="text"
       placeholder="Search by name, email, or phone"
-      formControlName="search"
+      [formControl]="filterForm.controls.search"
     />
 
-    <select formControlName="stage">
+    <select class="select" [formControl]="filterForm.controls.stage">
       <option value="">All stages</option>
       <option value="New">New</option>
       <option value="Contacted">Contacted</option>
-      <option value="Active">Active</option>
+      <option value="Qualified">Qualified</option>
+      <option value="Under Contract">Under Contract</option>
       <option value="Closed">Closed</option>
+      <option value="Dead">Dead</option>
     </select>
 
-    <select formControlName="owner">
+    <select class="select" [formControl]="filterForm.controls.owner">
       <option value="mine">My leads</option>
       <option value="all">All leads</option>
     </select>
-  </form>
+  </div>
 
-  <div *ngIf="loading">Loading…</div>
+  <div class="card tableWrap">
+    <table class="table" *ngIf="leads.length; else empty">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Stage</th>
+          <th>Source</th>
+          <th>Owner</th>
+          <th>Created</th>
+        </tr>
+      </thead>
 
-  <table *ngIf="!loading">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Stage</th>
-        <th>Source</th>
-        <th>Owner</th>
-        <th>Created</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let lead of leads">
-        <td>{{ lead.firstName }} {{ lead.lastName }}</td>
-        <td>{{ lead.stage }}</td>
-        <td>{{ lead.source }}</td>
-        <td>{{ lead.ownerId }}</td>
-        <td>{{ lead.createdAt | date }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <tr *ngFor="let l of leads">
+          <td class="name">
+            <div class="primary">{{ l.firstName }} {{ l.lastName }}</div>
+            <div class="muted" *ngIf="l.email">{{ l.email }}</div>
+            <div class="muted" *ngIf="l.phone">{{ l.phone }}</div>
+          </td>
+
+          <td>
+            <span class="pill">{{ l.stage }}</span>
+          </td>
+          <td>{{ l.source || "Manual" }}</td>
+
+          <td class="muted">
+            {{ l.ownerId }}
+          </td>
+
+          <td class="muted">
+            {{ l.createdAt | date : "yyyy-MM-dd HH:mm" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #empty>
+      <div class="empty">
+        <div *ngIf="loading">Loading...</div>
+        <div *ngIf="!loading">No leads found.</div>
+      </div>
+    </ng-template>
+  </div>
 </section>
